@@ -1,5 +1,5 @@
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Iterable, List, Optional
 
 from funcy import first
 
@@ -14,6 +14,7 @@ logger = logger.getChild(__name__)
 
 def save(
     repo: "Repo",
+    targets: Optional[Iterable[str]] = None,
     name: Optional[str] = None,
     force: bool = False,
     include_untracked: Optional[List[str]] = None,
@@ -26,12 +27,13 @@ def save(
     logger.debug("Saving workspace in %s", os.getcwd())
 
     queue = repo.experiments.workspace_queue
-    entry = repo.experiments.new(queue=queue, name=name, force=force)
-    executor = queue.init_executor(repo.experiments, entry)
+    entry = repo.experiments.new(queue=queue, name=name, force=force, targets=targets)
+    executor = queue.init_executor(repo.experiments, entry, targets=targets)
 
     try:
         save_result = executor.save(
             executor.info,
+            targets=targets,
             force=force,
             include_untracked=include_untracked,
             message=message,
