@@ -27,8 +27,8 @@ def save(
     logger.debug("Saving workspace in %s", os.getcwd())
 
     queue = repo.experiments.workspace_queue
-    entry = repo.experiments.new(queue=queue, name=name, force=force, targets=targets)
-    executor = queue.init_executor(repo.experiments, entry, targets=targets)
+    entry = repo.experiments.new(queue=queue, name=name, force=force)
+    executor = queue.init_executor(repo.experiments, entry)
 
     try:
         save_result = executor.save(
